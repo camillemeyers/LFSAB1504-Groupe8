@@ -1,0 +1,207 @@
+\documentclass[a4paper, 10pt]{article} 
+\usepackage[hmargin=2cm, vmargin = 3cm,noheadfoot]{geometry}
+\usepackage[utf8x]{inputenc} %ou [utf8]
+%!!!Ne marche pas avec \section*{} !!!! 
+\usepackage[T1]{fontenc} 
+\usepackage[french]{babel} 
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{empheq}
+\usepackage{color}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{geometry}
+%\geometry{top=longueur, bottom=longueur, left=longueur , right=longueur}
+\usepackage{enumitem}
+\graphicspath{{Images/}}
+
+
+
+\title{Projet P4 - S1}
+\author{Js Deneil}
+\begin{document}
+\maketitle
+
+\part{Quick return}
+
+\section{Objectif du pré-projet}
+
+\subsection{Calcul analytique}
+
+\begin{itemize}
+\item PPP 
+\item Multiplicateurs de Lagrange 
+\end{itemize}
+$\Rightarrow$ Equations du mouvement
+
+\subsection{Robotran}
+$\Rightarrow$ \textbf{générer} ces équations
+
+\section{Approche analytique}
+
+\paragraph{Hypothèses :}
+\begin{itemize}[label=$\bullet$]
+\item La glissière n'est pas attachées à l'actionneur
+\item Le bras n'est pas attaché à la bielle
+\end{itemize}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.4]{Schem}
+\end{figure}
+On se retrouve donc avec \textbf{cinq} corps distincts ! 
+
+On utilise le principe des puissances potentielles afin de calculer les équations du mouvement sur ces corps. Pour ce faire on définit un ensemble de \textbf{cinq} coordonnées généralisées $\textbf{q}$. Il est à noter que par ce choix de coordonnées, il apparaît que l’outil ne pivote pas et se déplace exclusivement horizontalement. 
+
+On impose \textbf{quatre} contraintes cinématique $\textbf{h}$, ce qui nous permet de calculer la \textit{Jacobienne des contraintes} $\textbf{J}$.  Après calcul des équations du mouvement et l'inventaire des forces en action sur chaque corps rigide on peur désormais appliquer le PPP afin d'obtenir les équations du mouvement.
+
+On obtient alors : 
+\begin{equation}
+M(q)\ddot{q} + c(q,\dot{q},f_{\text{ext}},l_{\text{ext}},g) = Q + J^{T} \lambda
+\end{equation}
+L'objet principal de ce pré projet consiste à intégrer ces équations du mouvement afin de décrire l'évolution du système. Cette intégration se fera numériquement à l'aide de \textit{MATLAB} et de la fonction \texttt{ode45}, seulement pour pouvoir utiliser cette fonction deux problèmes se présentent
+\begin{enumerate}
+\item \texttt{ode45} ne permet pas d’intégrer des équations différentielles algébriques (DAEs), c’est à dire des équations différentielles ordinaire (ODEs) couplées avec des contraintes al- gébriques,
+\item \texttt{ode45} ne permet pas d’intégrer des équations du second ordre comme les équations du mouvement.
+\end{enumerate}
+
+Pour parer au premier problème nous utiliserons la méthode du \textbf{coordinate partitioning} et pour le second problème, un \textbf{changement de variable judicieux} sera réalisé afin d'obtenir un système d’ODEs du premier ordre de 2n équations.
+
+\subsection{Coordinate partitioning }
+
+Cette méthode nous est expliquée à la page 11 du document S0\_Robotran\_basics.pdf
+
+Afin de résoudre le système suivant :
+\begin{align*}
+  \left\{
+  \begin{aligned}
+      &M(q)\ddot{q} + c(q,\dot{q},f_{\text{ext}},l_{\text{ext}},g) = Q + J^{T} \lambda\\ 
+		&h(q)=0\\
+       & \dot{h}(q,\dot{q}) = J(q)\dot{q} = 0\\
+        &\ddot{h}(q,\dot{q},\ddot{q}) = J(q)\ddot{q} + \dot{J}(q,\dot{q})\dot{q}=0
+  \end{aligned}
+  \right.
+\end{align*}
+Nous allons tout d'abord calculer le terme $ \dot{J}(q,\dot{q})\dot{q}$ qui n'a pas encore été trouvé. Connaissant $J$ in nous suffit de la dériver :
+\begin{align*}
+\dot{J} &= \begin{pmatrix}
+   0 & -\dot{x}_2\sin\theta_1 - \dot{\theta}_1x_2\cos\theta_1 & -\dot{\theta}_1 \sin\theta_1 & \dot{\theta}_2L_4\cos\theta_2 & 0 \\
+   0 & -\dot{x}_2\cos\theta_1 - \dot{\theta}_1x_2\sin\theta_1 & \dot{\theta}_1 \cos\theta_1 & \dot{\theta}_2L_4\sin\theta_2 & 0 \\
+   0 & -\dot{\theta}_1L_2\cos\theta_1 & 0 & 0 & \dot{\theta}_3L_5 \cos\theta_3\\
+      0 & \dot{\theta}_1L_2\sin\theta_1 & 0 & 0 & \dot{\theta}_3L_5 \sin\theta_3\\
+\end{pmatrix}
+\end{align*}
+On multiplie alors par $\dot{\textbf{q}} = \begin{Bmatrix}
+   x_1\\ \theta_1 \\ x_2\\ \theta_2 \\ \theta_3\\
+\end{Bmatrix} $ afin d'obtenir le terme recherché :
+
+\begin{align*}
+\dot{J}(q,\dot{q})\dot{q} &= \begin{pmatrix}
+(-\dot{x}_2 \sin\theta_1 - \dot{\theta}_1x_2\cos\theta_1)\dot{\theta}_1 -\dot{x}_2\sin\theta_1\dot{\theta}_1 + L_4\cos\theta_2 \dot{\theta}_2^2\\
+(\dot{x}_2\cos\theta_1-\dot{\theta}_1x_2\sin\theta_1)\dot{\theta}_1 + \dot{x}_2\cos\theta_1 \dot{\theta}_1 + L_4\sin\theta_2 \dot{\theta}_2^2\\
+(-\dot{\theta}_1L_2\cos\theta_1)\dot{\theta}_1 + (\dot{\theta}_3L_5\cos\theta_3)\dot{\theta}_3\\
+(-\dot{\theta}_1L_2\sin\theta_1)\dot{\theta}_1 + (\dot{\theta}_3L_5\sin\theta_3)\dot{\theta}_3\\
+\end{pmatrix}
+\end{align*}
+qui représente le terme d'accélération de notre objet, de taille [$m * 1$] 
+
+Revenons maintenant au \textbf{coordinate partitioning} celui se déroule comme suit :
+On va tout d'abord séparer le vecteur coordonnée en deux parties : 
+\begin{align*}
+q = \begin{pmatrix}
+u \\ v\\
+\end{pmatrix}
+\end{align*}
+avec $u$ l'ensemble des ($n-m$) coordonnées \textbf{indépendantes} et $v$ l'ensemble des coordonnées \textbf{dépendantes} .
+De manière similaire on sépare le Jacobien :
+\begin{align*}
+J &= \begin{pmatrix}
+J_u & J_v\\
+\end{pmatrix}
+\end{align*}
+En choisissant $v$ de manière judicieuse, la matrice $J_v$ de taille [$m * m$] doit être régulière (inversible).
+
+Pour trouver $v$ deux solutions sont possibles, la première consiste en appliquant la \textbf{LU Factorization} sur $J$ et la seconde est de se baser sur un raisonnement intuitif. Notre système étant relativement simple, en appliquant la seconde méthode il apparaît que la seule coordonnée indépendant de notre système est $\theta_2$ 
+
+\textcolor{red}{\textsc{Fin de la séance !}}
+
+On peut donc écrire 
+\begin{align*}
+M(q)\ddot{q} + c(q,\dot{q},f_{\text{ext}},l_{\text{ext}},g) = Q + J^{T} \lambda
+\end{align*}
+de cette manière : 
+\begin{align*}
+\begin{pmatrix}
+M_{uu} & M_{uv}\\
+M_{vu} & M_{vv}\\
+\end{pmatrix}
+\begin{pmatrix}
+\ddot{u}\\ \ddot{v}\\
+\end{pmatrix} + 
+\begin{pmatrix}
+c_u \\ c_v\\
+\end{pmatrix}
+&= 
+\begin{pmatrix}
+Q_u \\ Q_v\\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+J_u^t \\ J_v^t
+\end{pmatrix}
+\lambda
+\end{align*}
+$J_v$ étant inversible, on élimine les multiplicateurs de Lagranges $\lambda$ inconnus 
+\begin{align*}
+\begin{pmatrix}
+M_{uu} & M_{uv}\\
+\end{pmatrix}
+\begin{pmatrix}
+\ddot{u}\\ \ddot{v}\\
+\end{pmatrix}
++
+B_{vu}^t \begin{pmatrix}
+M_{vu} & M_{vv}\\
+\end{pmatrix}
+\begin{pmatrix}
+\ddot{u}\\ \ddot{v}\\
+\end{pmatrix}
++ c_u + B_{vu}^t c_v &= Q_u + B_{vu}^t Q_v
+\end{align*}
+où l'on défini la \textit{coupling matrix} : $B_{vu} \triangleq -(J_v)^{-1} J_u$. On va résoudre en éliminant les coordonnées dépendantes $v$, pour ce faire nous utiliserons un solveur itératif  à cause des contraintes $\textbf{h}$ qui sont généralement non-linéaires. L'algorithme de \textit{Newton-Raphson} sera donc utilisé ici :
+\begin{align*}
+v^{k+1} &= v^k - (J_v)^{-1} h |_{v=v^k}
+\end{align*}
+Ensuite en utilisant les équations 
+\begin{align*}
+\dot{h}(q,\dot{q}) &= J(q)\dot{q} = 0\\
+ \ddot{h}(q,\dot{q},\ddot{q})& = J(q)\ddot{q} + \dot{J}(q,\dot{q})\dot{q} = 0\\
+\end{align*}
+On trouve les vitesses $\dot{v}$ et accélérations $\ddot{v}$ :
+\begin{align*}
+\dot{v} &= B_{vu}\dot{u}\\
+\ddot{v} &= B_{vu}\ddot{u}+b \quad \text{avec} \quad b \triangleq - J^{-1} (\dot{J}\dot{q})
+\end{align*}
+On peut donc désormais exprimer le problème uniquement en fonction de $u$, $\dot{u}$ et $\ddot{u}$ :
+
+\subsection{Changement de variable}
+\section{Robotran}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
