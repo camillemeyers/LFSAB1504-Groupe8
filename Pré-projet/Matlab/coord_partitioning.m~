@@ -61,7 +61,6 @@ Bvu = -(Jv)^(-1)*Ju;
 
 Jqdot = [(-x2dot*sin(theta1)-theta1dot*x2*cos(theta1))*theta1dot-x2dot*sin(theta1)*theta1dot+L4*cos(theta2)*(theta2dot)^2
     (x2dot*cos(theta1)-theta1dot*x2*sin(theta1))*theta1dot+x2dot*cos(theta1)*theta1dot+L4*sin(theta2)*(theta2dot)^2
-    (-theta1dot*L2*cos(theta1))*theta1dot+(theta3dot*L5*cos(theta3))*theta3dot
-    (-theta1dot*L2*sin(theta1))*theta1dot+(theta3dot*L5*sin(theta3))*theta3dot];
+    (-theta1dot*L2*cos(theta1))*theta1dot+]
 end
 
