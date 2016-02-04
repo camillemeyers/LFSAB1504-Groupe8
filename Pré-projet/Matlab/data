@@ -1,8 +1,13 @@
 %Base de donnee du probleme Quick Return
 %/!\ Pas d accent dans les codes MATLAB : ca fait bug LaTeX !
+%Il ne faut pas executer ce script mais copy paste son contenu dans la
+%Commande Window afin de creer la structure data. Sinon sa lance une
+%erreure.. Il y a pe moyen de faire autrement mais ca fait seulement 1h que
+%je bosse avec les structures et je n ai encore rien trouve
 
 %% caracteristiques du corps 1:
 data.m1 = 16; % masse du corps 1
+%data.E = data.q(1); %Position de reference de E par rapport a O
 
 %% caracteristiques du corps 2:
 data.L2 = 0.53; %longueur du bras
@@ -14,14 +19,18 @@ data.m3 = 1.5; %masse de la glissiere
 data.I3 = 0.001; %inertie de la glissiere
 
 %% caracteristiques du corps 4:
+%Position de reference A = a1*I1 + a2*I2
+    data.a1 = 0.1; 
+    data.a2 = 0.25;
 data.L4 = 0.1; %longueur de l'actionneur
 data.m4 = 1; %masse de l'actionneur
 data.I4 = 10; %inertie de l'actionneur
 
 %% caracteristiques du corps 5:
-data.L2 = 0.1; %longueur de la bielle
-data.m2 = 2; %masse de la bielle
-data.I2 = 0.0015; %inertie de la bielle
+data.b2 = 0.45; %position de reference B = b2*I2
+data.L5 = 0.1; %longueur de la bielle
+data.m5 = 2; %masse de la bielle
+data.I5 = 0.0015; %inertie de la bielle
 
 %Vecteur des positions generalisee
 x1 = sym('x1');
@@ -56,4 +65,6 @@ data.qu = 4;
 %Vecteur des indices des variables dependantes
 data.qv = [1 2 3 5];
 
+
 data
+
