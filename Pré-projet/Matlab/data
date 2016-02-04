@@ -1,0 +1,59 @@
+%Base de donnee du probleme Quick Return
+%/!\ Pas d accent dans les codes MATLAB : ca fait bug LaTeX !
+
+%% caracteristiques du corps 1:
+data.m1 = 16; % masse du corps 1
+
+%% caracteristiques du corps 2:
+data.L2 = 0.53; %longueur du bras
+data.m2 = 4.5; %masse du bras
+data.I2 = 0.11; %inertie du bras
+
+%% caracteristiques du corps 3:
+data.m3 = 1.5; %masse de la glissiere
+data.I3 = 0.001; %inertie de la glissiere
+
+%% caracteristiques du corps 4:
+data.L4 = 0.1; %longueur de l'actionneur
+data.m4 = 1; %masse de l'actionneur
+data.I4 = 10; %inertie de l'actionneur
+
+%% caracteristiques du corps 5:
+data.L2 = 0.1; %longueur de la bielle
+data.m2 = 2; %masse de la bielle
+data.I2 = 0.0015; %inertie de la bielle
+
+%Vecteur des positions generalisee
+x1 = sym('x1');
+theta1 = sym('theta1');
+x2 = sym('x2');
+theta2 = sym('theta2');
+theta3 = sym('theta3');
+
+data.q = [x1 ;theta1 ;x2 ;theta2 ;theta3];
+
+%Vecteur des vitesses generalisees
+x1d = sym('x1d');
+theta1d = sym('theta1d');
+x2d = sym('x2d');
+theta2d = sym('theta2d');
+theta3d = sym('theta3d');
+
+data.qd = [x1d ;theta1d ;x2d ;theta2d ;theta3d];
+
+%Vecteur des accelerations generalisees
+x1dd = sym('x1dd');
+theta1dd = sym('theta1dd');
+x2dd = sym('x2dd');
+theta2dd = sym('theta2dd');
+theta3dd = sym('theta3dd');
+
+data.qdd = [x1dd ;theta1dd ;x2dd ;theta2dd ;theta3dd];
+
+%Vecteur des indices des variables independantes
+data.qu = 4;
+
+%Vecteur des indices des variables dependantes
+data.qv = [1 2 3 5];
+
+data
