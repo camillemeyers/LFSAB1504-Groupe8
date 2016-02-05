@@ -8,6 +8,7 @@ function [] = QuickRManuel(data)
     qu = data.qu;
     qv = data.qv;
     
+    [h, J] = QuickRManuel_cons_hJ(data);
     Ju = J(qu,qu);
     Jv = zeros(4);
        for i = 1:1:4
@@ -37,6 +38,18 @@ function [] = QuickRManuel(data)
     Jut = Ju';
     Jvt = Jv';
     
+    %Coupling matrix 
+    Bvu = -(Jv)^(-1)*Ju;
+    Bvut = Bvu';
+    
+    %b (calcul de vdd)
+    Jdqd = QuickRManuel_cons_jdqd(data);
+    div = J(Jdqd);
+    b = -1/div;
+    
+    %1.3 Mise en equation 
+    
+    %(Muu + Muv*Bvu+Bvut*Mvu+Bvut*Mvv*Bvu)*udd + (Muv+Bvut*Mvv)*b + (cu+Bvut*cv) - (Qu+bvut*Qv) = 0;
 %2. Changement de variables
 
 %3. Integration
