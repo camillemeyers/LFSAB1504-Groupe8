@@ -1,0 +1,27 @@
+function [Jdqd] = QuickRManuel_cons_jdqd(data)
+%renvoie le terme Jdqd utile pour le coordinate partioning.
+
+%Variables utiles
+L2 = data.L2;
+L4 = data.L4;
+L5 = data.L5;
+x2 = data.q(3);
+theta1 = data.q(2);
+theta2 = data.q(4);
+theta3 = data.q(5);
+theta1d = data.qd(2);
+x2d = data.qd(3);
+theta2d = data.qd(4);
+theta3d = data.qd(5);
+
+% Matrice calculee en seance (voir projet-p4-s1.pdf)
+
+Jdqd(1,1) = (-x2d*sin(theta1)-theta1d*x2*cos(theta1))*theta1d - x2d*sin(theta1)*theta1d + L4*cos(theta2)*theta2d*theta2d;
+Jdqd(2,1) = (x2d*cos(theta1)-theta1d*x2*sin(theta1))*theta1d + x2d*cos(theta1)*theta1d + L4*sin(theta2)*theta2d*theta2d;
+Jdqd(3,1) = -theta1d*L2*cos(theta1)*theta1d + theta3d*L5*cos(theta3)*theta3d;
+Jdqd(4,1) = -theta1d*L2*sin(theta1)*theta1d + theta3d*L5*sin(theta3)*theta3d;
+
+
+
+end
+
