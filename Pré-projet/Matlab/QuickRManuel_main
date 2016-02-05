@@ -1,0 +1,12 @@
+function [t,x] = QuickRManuel_main(data)
+%Integration des equations du mouvement par ode45
+
+%Conditions initiales : 
+%                           u(0) = 0 rad
+%                           ud(0) = pi rad/s
+%                           Tspan = [0 20]
+%
+[t,x]=ode45(@QuickRManuel_mvtequ,[0,20],[0 pi]);
+
+end
+
