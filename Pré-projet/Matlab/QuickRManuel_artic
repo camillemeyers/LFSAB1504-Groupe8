@@ -1,0 +1,12 @@
+function [Q] = QuickRManuel_artic(data)
+%Renvoie le vecteur des forces articulaires (forces dans les verins). 
+
+%Variables utiles
+S1 = data.S1;
+T4 = data.T4;
+
+%Vecteur Q :
+Q = [S1;0;0;T4;0];
+
+end
+
