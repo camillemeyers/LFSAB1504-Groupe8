@@ -1,12 +1,14 @@
 %Base de donnee du probleme Quick Return
 %/!\ Pas d accent dans les codes MATLAB : ca fait bug LaTeX !
 %Il ne faut pas executer ce script mais copy paste son contenu dans la
-%Commande Window afin de creer la structure data. Sinon sa lance une
+%Command Window afin de creer la structure data. Sinon sa lance une
 %erreure.. Il y a pe moyen de faire autrement mais ca fait seulement 1h que
 %je bosse avec les structures et je n ai encore rien trouve
 
 %% caracteristiques du corps 1:
+S1 = sym('S1');
 data.m1 = 16; % masse du corps 1
+data.S1 = S1; % Force de coupe exterieure en E selon I1
 %data.E = data.q(1); %Position de reference de E par rapport a O
 
 %% caracteristiques du corps 2:
@@ -22,9 +24,11 @@ data.I3 = 0.001; %inertie de la glissiere
 %Position de reference A = a1*I1 + a2*I2
     data.a1 = 0.1; 
     data.a2 = 0.25;
-data.L4 = 0.1; %longueur de l'actionneur
+data.L4 = 0.1; %longueur de l actionneur
 data.m4 = 1; %masse de l'actionneur
-data.I4 = 10; %inertie de l'actionneur
+data.I4 = 10; %inertie de l actionneur
+T4 = sym('T4');
+data.T4 = T4; %Couple moteur appliqué en A sur l actionneur
 
 %% caracteristiques du corps 5:
 data.b2 = 0.45; %position de reference B = b2*I2
