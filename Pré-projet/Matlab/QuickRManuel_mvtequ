@@ -1,0 +1,61 @@
+function [du] = QuickRManuel_mvtequ(u,data)
+%Mise en forme de l equation du mouvement
+
+%1.Coordinate partitioning
+
+    %1.1 Partitionnement des coordonnees generalisee et du Jacobien
+  
+    qu = data.qu;
+    qv = data.qv;
+    
+    [h, J] = QuickRManuel_cons_hJ(data);
+    Ju = J(qu,qu);
+    Jv = zeros(4);
+       for i = 1:1:4
+           for j = 1:1:4
+               Jv(i,j) = J(qv(i),qv(j));
+           end
+       end
+       
+    %1.2 Partitionnement des equations du mouvement
+    
+    [M, c] = QuickRManuel_dirdyna(data);
+    Q = QuickRManuel_artic(data);
+    
+    Muu = M(qu,qu);
+    Muv = M(qu,qv);
+    Mvu = M(qv,qu);
+    Mvv = M(qv,qv);
+    
+    udd = qdd(qu);
+    
+    cu = c(qu);
+    cv = c(qv);
+    
+    Qu = Q(qu);
+    Qv = Q(qv);
+    
+    Jut = Ju';
+    Jvt = Jv';
+    
+    %Coupling matrix 
+    Bvu = -(Jv)^(-1)*Ju;
+    Bvut = Bvu';
+    
+    %b (calcul de vdd)
+    Jdqd = QuickRManuel_cons_jdqd(data);
+    div = J(Jdqd);
+    b = -1/div;
+    
+    %1.3 Mise en equation 
+    
+    alpha = Muu + Muv*Bvu+Bvut*Mvu+Bvut*Mvv*Bvu;
+    beta = (Muv+Bvut*Mvv)*b + (cu+Bvut*cv) - (Qu+bvut*Qv);
+    
+%2. Changement de variables
+
+    du(1) = u(2);        % ud = w
+    du(2) = -beta/alpha; % wd = udd = -beta/alpha
+
+end
+
