@@ -7,10 +7,6 @@ m2 = data.m2;
 m3 = data.m3;
 m4 = data.m4;
 m5 = data.m5;
-theta1 = data.q(2);
-theta1d = data.qd(2);
-x2 = data.q(3);
-x2d = data.qd(3);
 L2 = data.L2;
 L4 = data.L4;
 L5 = data.L5;
@@ -18,6 +14,15 @@ I2 = data.I2;
 I3 = data.I3;
 I4 = data.I4;
 I5 = data.I5;
+
+%Calcul des cond init
+[CI] = QuickRManuel_initalcond(data);
+[CIV] = QuickRManuel_initalcondvit(data);
+theta1 = CI(2);
+theta1d = CIV(2);
+x2 = CI(3);
+x2d = CIV(3);
+
 
 M12 = -0.5*L2*m2*sin(theta1) - m3*x2*sin(theta1);
 M21=M12;
@@ -37,4 +42,3 @@ c(4) = 0;
 c(5) = 0;
 
 end
-
