@@ -3,22 +3,31 @@ function [CI] = QuickRManuel_initalcond(data)
 %coordonnee independantes theta2 = 0 et retourne le vecteur CI contenant
 %les valeurs numeriques initiales du vecteur q = (x1,theta1,x2,theta2,theta3) 
 
-%Variables utiles
-x1 = data.q(1);
-theta1 = data.q(2);
-x2 = data.q(3);
-theta3 = data.q(5);
-
 %CI(1) = x1 initial, CI(2) = theta1 initial,... etc
 
 %Après avoir posé le système suivant sur papier, on peut le résoudre grace
 %a MATLAB
+x1 = data.q(1);
+theta1 = data.q(2);
+x2 = data.q(3);
+theta3 = data.q(5);
+%Etapes de calcul pour trouver theta1
+x2a=data.a2/sin(theta1);
+x1a=data.L4+data.a1-x2a*cos(theta1);
+theta3a = acos((x1a+data.L2*cos(theta1))/data.L5);
+%On trouve alors thetaI (parait qu il faut multiplier par 4*pi mais je pense
+%pas sinon on un theta3 imaginaire...)
+theta1I = solve(-data.L5*sin(theta3a)-data.b2+data.L2*sin(theta1));
 
-CI(1) = solve(0.1+0.1-0.27457*cos(-10.5693)==x1);
-CI(2) = 4*pi*solve(0.45==0.53*sin(theta1)-0.1*sin(acos((0.1+0.1-0.25*cot(theta1)+0.53*cos(theta1))/0.1)));
-CI(3) = solve(x2==0.25/sin(CI(2)));
+x2I = solve(x2==data.a2/sin(theta1I));
+x1I=solve(x1==data.L4+data.a1-x2I*cos(theta1I));
+theta3I = solve(theta3==acos((x1I+data.L2*cos(theta1I))/data.L5));
+%Pour finir on met tout dans un beau vecteur
+CI(1) = x1I;
+CI(2) = theta1I;
+CI(3) = x2I;
 CI(4) = 0;
-CI(5) = abs(solve(cos(theta3)==(0.1+0.1-0.25*cot(CI(2))+0.53*cos(CI(2)))/0.1));
+CI(5) = theta3I;
 
 CI = CI';
 end
