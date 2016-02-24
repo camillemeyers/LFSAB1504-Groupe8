@@ -1,0 +1,45 @@
+function [CIV] = QuickRManuel_initalcondvit(data)
+%Trouve les coordonnees dépendantes initiales du probleme en fonction de la
+%coordonnee independantes theta2 = 0 et retourne le vecteur CI contenant
+%les valeurs numeriques initiales du vecteur q = (x1,theta1,x2,theta2,theta3) 
+
+%CI(1) = x1 initial, CI(2) = theta1 initial,... etc
+
+%Après avoir posé le système suivant sur papier, on peut le résoudre grace
+%a MATLAB
+x1d = data.q(1);
+theta1d = data.q(2);
+x2d = data.q(3);
+theta3d = data.q(5);
+
+%Calcul des positions
+
+[CI] = QuickRManuel_initalcond(data);
+x1 = CI(1);
+theta1 = CI(2);
+x2 = CI(3);
+theta2 = CI(4);
+theta3 = CI(5)
+
+%Etapes de calcul pour trouver theta1
+x2da= - theta1d*x2*cot(theta1);
+alpha = x2*sin(theta1)+x2*cot(theta1)*cos(theta1);
+x1da= theta1d*alpha;
+beta = (10/sin(theta3))*((53*sin(theta1))/100-alpha);
+theta3da =beta*theta1d;
+%On trouve alors thetaI (parait qu il faut multiplier par 4*pi mais je pense
+%pas sinon on un theta3 imaginaire...)
+theta1dI = solve(((53*theta1d*cos(theta1))/10)-theta3d*cos(theta3)==0);
+
+x2dI= - theta1dI*x2*cot(theta1);
+x1dI= theta1dI*alpha;
+theta3dI =beta*theta1dI;
+%Pour finir on met tout dans un beau vecteur
+CIV(1) = x1dI;
+CIV(2) = theta1dI;
+CIV(3) = x2dI;
+CIV(4) = 0;
+CIV(5) = theta3dI;
+
+CIV = CIV';
+end
