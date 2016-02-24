@@ -9,13 +9,19 @@ a1 = data.a1;
 a2 = data.a2;
 b2 = data.b2;
 
-%Coordonnees initiales 
+%NUM
 [q] = QuickRManuel_initalcond(data)
 x1 = q(1);
 x2 = q(3);
 theta1 = q(2);
 theta2 = q(4);
 theta3 = q(5);
+%SYM
+% x1 = data.q(1);
+% x2 = data.q(3);
+% theta1 = data.q(2);
+% theta2 = data.q(4);
+% theta3 = data.q(5);
 %Contraintes entre les coordonnees generalisee :
 
 h(1) = -L4*cos(theta2) - a1 + x1 + x2*cos(theta1);
@@ -29,4 +35,3 @@ Jac= [1,-x2*sin(theta1), cos(theta1), L4*sin(theta2) 0;
     1, -L2*sin(theta1), 0, 0, L5*sin(theta3);
     0, L2*cos(theta1), 0, 0, -L5*cos(theta3)];
 end
-
