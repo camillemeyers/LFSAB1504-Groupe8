@@ -1,4 +1,4 @@
-function [CI] = QuickRManuel_initalcond(data)
+function [] = QuickRManuel_initalcond(data)
 %Trouve les coordonnees dépendantes initiales du probleme en fonction de la
 %coordonnee independantes theta2 = 0 et retourne le vecteur CI contenant
 %les valeurs numeriques initiales du vecteur q = (x1,theta1,x2,theta2,theta3) 
@@ -7,17 +7,17 @@ function [CI] = QuickRManuel_initalcond(data)
 
 %Après avoir posé le système suivant sur papier, on peut le résoudre grace
 %a MATLAB
-x1 = data.q(1);
-theta1 = data.q(2);
-x2 = data.q(3);
-theta3 = data.q(5);
+x1 = sym('x1');
+theta1 = sym('theta1');
+x2 = sym('x2');
+theta3 = sym('theta3');
 %Etapes de calcul pour trouver theta1
 x2a=data.a2/sin(theta1);
 x1a=data.L4+data.a1-x2a*cos(theta1);
 theta3a = acos((x1a+data.L2*cos(theta1))/data.L5);
 %On trouve alors thetaI (parait qu il faut multiplier par 4*pi mais je pense
 %pas sinon on un theta3 imaginaire...)
-theta1I = solve(-data.L5*sin(theta3a)-data.b2+data.L2*sin(theta1));
+theta1I = solve(-data.L5*sin(theta3a)-data.b2+data.L2*sin(theta1)==0);
 
 x2I = solve(x2==data.a2/sin(theta1I));
 x1I=solve(x1==data.L4+data.a1-x2I*cos(theta1I));
@@ -29,6 +29,6 @@ CI(3) = x2I;
 CI(4) = 0;
 CI(5) = theta3I;
 
-CI = CI';
+data.q=CI;
 end
 
