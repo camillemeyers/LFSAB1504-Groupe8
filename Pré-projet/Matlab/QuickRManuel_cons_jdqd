@@ -5,14 +5,19 @@ function [Jdqd] = QuickRManuel_cons_jdqd(data)
 L2 = data.L2;
 L4 = data.L4;
 L5 = data.L5;
-x2 = data.q(3);
-theta1 = data.q(2);
-theta2 = data.q(4);
-theta3 = data.q(5);
-theta1d = data.qd(2);
-x2d = data.qd(3);
-theta2d = data.qd(4);
-theta3d = data.qd(5);
+
+%Cond init
+[CI] = QuickRManuel_initalcond(data);
+[CIV] = QuickRManuel_initalcondvit(data);
+
+x2 = CI(3);
+theta1 = CI(2);
+theta2 = CI(4);
+theta3 = CI(5);
+theta1d = CIV(2);
+x2d = CIV(3);
+theta2d = CIV(4);
+theta3d = CIV(5);
 
 % Matrice calculee en seance (voir projet-p4-s1.pdf)
 
