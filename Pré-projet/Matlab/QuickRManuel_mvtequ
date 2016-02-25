@@ -7,16 +7,23 @@ function [du] = QuickRManuel_mvtequ(u,data)
   
     qu = data.qu;
     qv = data.qv;
-    
-    [h, J] = QuickRManuel_cons_hJ(data);
-    Ju = J(qu,qu);
-    Jv = zeros(4);
-       for i = 1:1:4
-           for j = 1:1:4
-               Jv(i,j) = J(qv(i),qv(j));
+    h=0;
+    tol=1e-9;
+    nmax = 100;
+    while (norm(h) <= tol && n < nmax)
+        [h, J] = QuickRManuel_cons_hJ(data);
+        Ju = J(qu,qu);
+        Jv = zeros(4);
+           for i = 1:1:4
+               for j = 1:1:4
+                   Jv(i,j) = J(qv(i),qv(j));
+               end
            end
-       end
-       
+        n = n+1;
+        delta = -inv(Jv)*h;
+        x = x - delta';
+        fprintf('Estimated error %14.7e at %i iteration\n',norm(h),n);
+    end
     %1.2 Partitionnement des equations du mouvement
     
     [M, c] = QuickRManuel_dirdyna(data);
