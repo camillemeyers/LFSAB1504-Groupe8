@@ -30,7 +30,7 @@ h(3) = -L5*cos(theta3) + x1 + L2*cos(theta1);
 h(4) = -L5*sin(theta3) - b2 + L2*cos(theta1);
 
 %Jacobienne des contraintes ;
-Jac= [1,-x2*sin(theta1), cos(theta1), L4*sin(theta2) 0; 
+Jac= [1,-x2*sin(theta1), cos(theta1), L4*sin(theta2), 0; 
     0, x2*cos(theta1), sin(theta1), -L4*cos(theta2), 0;
     1, -L2*sin(theta1), 0, 0, L5*sin(theta3);
     0, L2*cos(theta1), 0, 0, -L5*cos(theta3)];
